@@ -1,0 +1,22 @@
+THREE LEFT - VERSION MOBILE
+===========================
+Controles tactiles: flechas (izq), Z / X (der), C y pantalla completa (arriba).
+Puedes deslizar el dedo de una flecha a otra sin soltar.
+
+OPCION A - Jugar YA sin APK (mas facil)
+1. Sube la carpeta "www" a un hosting gratis (Netlify Drop: app.netlify.com/drop, o GitHub Pages).
+2. Abre el link en Chrome del celular > menu > "Agregar a pantalla de inicio".
+   Se abre a pantalla completa como una app.
+
+OPCION B - Generar el APK (sin instalar nada en tu PC)
+1. Crea un repositorio en GitHub y sube TODO el contenido de esta carpeta.
+2. Ve a la pestana Actions > "Build APK" > Run workflow.
+3. Al terminar (~5 min), descarga el artefacto "three-left-apk" -> app-debug.apk.
+4. Pasalo al celular, activa "instalar apps de origen desconocido" e instalalo.
+
+OPCION C - APK en tu PC (Node 18+, Java 17, Android Studio/SDK)
+  npm install
+  npx cap add android
+  npx cap sync android
+  cd android && ./gradlew assembleDebug
+  -> android/app/build/outputs/apk/debug/app-debug.apk

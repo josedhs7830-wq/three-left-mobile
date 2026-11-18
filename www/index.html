@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!-- Created with https://packager.turbowarp.org/ -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <!-- We only include this to explicitly loosen the CSP of various packager environments. It does not provide any security. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:">
+  <title>three-left-v2.0-1.html</title>
+  <style>
+    body {
+      color: #ffffff;
+      font-family: sans-serif;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    :root, body.is-fullscreen {
+      background-color: #000000;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    h1 {
+      font-weight: normal;
+    }
+    a {
+      color: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    #app, #loading, #error, #launch {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: default;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #000000;
+    }
+    #launch {
+      background-color: rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+    }
+    .green-flag {
+      width: 80px;
+      height: 80px;
+      padding: 16px;
+      border-radius: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      border: 3px solid hsla(0, 100%, 100%, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    #loading {
+      
+    }
+    .progress-bar-outer {
+      border: 1px solid currentColor;
+      height: 10px;
+      width: 200px;
+      max-width: 200px;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      width: 0;
+      background-color: currentColor;
+    }
+    .loading-text, noscript {
+      font-weight: normal;
+      font-size: 36px;
+      margin: 0 0 16px;
+    }
+    .loading-image {
+      margin: 0 0 16px;
+    }
+    #error-message, #error-stack {
+      font-family: monospace;
+      max-width: 600px;
+      white-space: pre-wrap;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    #error-stack {
+      text-align: left;
+      max-height: 200px;
+      overflow: auto;
+    }
+    .control-button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0.375rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+      border: 0;
+      border-radius: 4px;
+    }
+    .control-button-highlight:hover {
+      background: #ff4c4c26;
+    }
+    .control-button-highlight.active {
+      background: #ff4c4c59;
+    }
+    .fullscreen-button {
+      background: white;
+    }
+    .standalone-fullscreen-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 0 0 0 4px;
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    html,body{height:100%;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+    #app{right:0;bottom:0}
+    #pad{position:fixed;inset:0;pointer-events:none;z-index:50;display:none}
+    #pad.on{display:block}
+    .tb{position:absolute;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;
+        display:flex;align-items:center;justify-content:center;color:#fff;font:bold 22px sans-serif;
+        background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.45);border-radius:50%;
+        width:var(--b);height:var(--b)}
+    .tb.sq{border-radius:14px}
+    .tb.down{background:rgba(255,200,0,.5);border-color:#ffd000}
+    :root{--b:min(17vmin,84px)}
+    #dpad{position:absolute;left:calc(env(safe-area-inset-left,0px) + 3vmin);bottom:calc(env(safe-area-inset-bottom,0px) + 5vmin);
+          width:calc(var(--b)*3);height:calc(var(--b)*3)}
+    #dpad .tb{position:absolute}
+    #dpad .u{left:var(--b);top:0}#dpad .d{left:var(--b);top:calc(var(--b)*2)}
+    #dpad .l{left:0;top:var(--b)}#dpad .r{left:calc(var(--b)*2);top:var(--b)}
+    #acts{position:absolute;right:calc(env(safe-area-inset-right,0px) + 3vmin);bottom:calc(env(safe-area-inset-bottom,0px) + 5vmin);
+          width:calc(var(--b)*2.4);height:calc(var(--b)*2.4)}
+    #acts .tb{position:absolute}
+    #acts .z{right:0;bottom:calc(var(--b)*.9)}
+    #acts .x{left:0;bottom:calc(var(--b)*.2)}
+    #acts .c{right:calc(var(--b)*.1);bottom:calc(var(--b)*-.15 - var(--b)*.9);display:none}
+    #top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:10px}
+    #top .tb{--b:40px;font-size:15px;opacity:.7}
+    #rot{position:fixed;inset:0;z-index:99;background:#000;color:#fff;display:none;align-items:center;justify-content:center;
+         text-align:center;font:20px sans-serif;padding:24px}
+    @media (orientation:portrait){#rot{display:flex}}
+    .sc-canvas {
+      cursor: auto;
+    }
+    .sc-monitor-root[data-opcode^="data_"] .sc-monitor-value-color {
+      background-color: #ff8c1a;
+    }
+    .sc-monitor-row-value-outer {
+      background-color: #fc662c;
+    }
+    .sc-monitor-row-value-editing .sc-monitor-row-value-outer {
+      background-color: #e25b27;
+    }
+    
+  </style>
+  <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  
+</head>
+<body>
+  <div id="app"></div>
+  <div id="rot">📱↻<br><br>Gira el celular en horizontal<br>Rotate your phone to landscape</div>
+  <div id="pad">
+    <div id="top">
+      <div class="tb sq" data-k="c" style="width:56px">C</div>
+      <div class="tb sq" id="fsbtn" style="width:56px">⛶</div>
+      <div class="tb sq" id="padbtn" style="width:56px">🎮</div>
+    </div>
+    <div id="dpad">
+      <div class="tb u" data-k="ArrowUp">▲</div>
+      <div class="tb l" data-k="ArrowLeft">◀</div>
+      <div class="tb r" data-k="ArrowRight">▶</div>
+      <div class="tb d" data-k="ArrowDown">▼</div>
+    </div>
+    <div id="acts">
+      <div class="tb z" data-k="z">Z</div>
+      <div class="tb x" data-k="x">X</div>
+    </div>
+  </div>
+
+
+  <div id="launch" class="screen" hidden title="Click to start">
+    <div class="green-flag">
+      <svg viewBox="0 0 16.63 17.5" width="42" height="44">
+        <defs><style>.cls-1,.cls-2{fill:#4cbf56;stroke:#45993d;stroke-linecap:round;stroke-linejoin:round;}.cls-2{stroke-width:1.5px;}</style></defs>
+        <path class="cls-1" d="M.75,2A6.44,6.44,0,0,1,8.44,2h0a6.44,6.44,0,0,0,7.69,0V12.4a6.44,6.44,0,0,1-7.69,0h0a6.44,6.44,0,0,0-7.69,0"/>
+        <line class="cls-2" x1="0.75" y1="16.75" x2="0.75" y2="0.75"/>
+      </svg>
+    </div>
+  </div>
+
+  <div id="loading" class="screen">
+    <noscript>Enable JavaScript</noscript>
+    
+    
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="loading-inner"></div></div>
+  </div>
+
+  <div id="error" class="screen" hidden>
+    <h1>Error</h1>
+    <details>
+      <summary id="error-message"></summary>
+      <p id="error-stack"></p>
+    </details>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    const appElement = document.getElementById('app');
+    const launchScreen = document.getElementById('launch');
+    const loadingScreen = document.getElementById('loading');
+    const loadingInner = document.getElementById('loading-inner');
+    const errorScreen = document.getElementById('error');
+    const errorScreenMessage = document.getElementById('error-message');
+    const errorScreenStack = document.getElementById('error-stack');
+
+    const handleError = (error) => {
+      console.error(error);
+      if (!errorScreen.hidden) return;
+      errorScreen.hidden = false;
+      errorScreenMessage.textContent = '' + error;
+      let debug = error && error.stack || 'no stack';
+      debug += '\nUser agent: ' + navigator.userAgent;
+      errorScreenStack.textContent = debug;
+    };
+    const setProgress = (progress) => {
+      if (loadingInner) loadingInner.style.width = progress * 100 + '%';
+    };
+    const interpolate = (a, b, t) => a + t * (b - a);
+
+    try {
+      setProgress(0.1);
+
+      const scaffolding = new Scaffolding.Scaffolding();
+      scaffolding.width = 480;
+      scaffolding.height = 360;
+      scaffolding.resizeMode = "preserve-ratio";
+      scaffolding.editableLists = false;
+      scaffolding.usePackagedRuntime = true;
+      scaffolding.setup();
+      scaffolding.appendTo(appElement);
+
+      const vm = scaffolding.vm;
+      window.scaffolding = scaffolding;
+      window.vm = scaffolding.vm;
+      window.Scratch = {
+        vm,
+        renderer: vm.renderer,
+        audioEngine: vm.runtime.audioEngine,
+        bitmapAdapter: vm.runtime.v2BitmapAdapter,
+        videoProvider: vm.runtime.ioDevices.video.provider
+      };
+
+      scaffolding.setUsername("player####".replace(/#/g, () => Math.floor(Math.random() * 10)));
+      scaffolding.setAccentColor("#ff4c4c");
+
+      
+
+      vm.setTurboMode(false);
+      if (vm.setInterpolation) vm.setInterpolation(false);
+      if (vm.setFramerate) vm.setFramerate(30);
+      if (vm.renderer.setUseHighQualityRender) vm.renderer.setUseHighQualityRender(false);
+      if (vm.setRuntimeOptions) vm.setRuntimeOptions({
+        fencing: true,
+        miscLimits: true,
+        maxClones: 300,
+      });
+      if (vm.setCompilerOptions) vm.setCompilerOptions({
+        enabled: true,
+        warpTimer: false
+      });
+      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(2048);
+
+      // enforcePrivacy threat model only makes sense in the editor
+      if (vm.runtime.setEnforcePrivacy) vm.runtime.setEnforcePrivacy(false);
+
+      if (typeof ScaffoldingAddons !== 'undefined') {
+        ScaffoldingAddons.run(scaffolding, {"gamepad":false,"pointerlock":false,"specialCloudBehaviors":false,"unsafeCloudBehaviors":false,"pause":false});
+      }
+
+      scaffolding.setExtensionSecurityManager({
+        getSandboxMode: () => 'unsandboxed',
+        canLoadExtensionFromProject: () => true
+      });
+      for (const extension of []) {
+        vm.extensionManager.loadExtensionURL(extension);
+      }
+
+    } catch (e) {
+      handleError(e);
+    }
+  </script>
+  
+  
+    <script>
+      const getProjectData = (function() {
+        const storage = scaffolding.storage;
+        storage.onprogress = (total, loaded) => {
+          setProgress(interpolate(0.2, 0.98, loaded / total));
+        };
+        
+        storage.addWebStore(
+          [
+            storage.AssetType.ImageVector,
+            storage.AssetType.ImageBitmap,
+            storage.AssetType.Sound,
+            storage.AssetType.Font
+          ].filter(i => i),
+          (asset) => new URL('./assets/' + asset.assetId + '.' + asset.dataFormat, location).href
+        );
+        return () => new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          resolve(xhr.response);
+        };
+        xhr.onerror = () => {
+          if (location.protocol === 'file:') {
+            reject(new Error('Zip environment must be used on a website, not on a local file. To fix this error, use the "Plain HTML" environment instead.'));
+          } else {
+            reject(new Error('Request to load project data failed.'));
+          }
+        };
+        xhr.onprogress = (e) => {
+          if (e.lengthComputable) {
+            setProgress(interpolate(0.1, 0.2, e.loaded / e.total));
+          }
+        };
+        xhr.responseType = 'arraybuffer';
+        xhr.open('GET', "./assets/project.json");
+        xhr.send();
+      });
+      })();
+    </script>
+  <script>
+    const run = async () => {
+      const projectData = await getProjectData();
+      await scaffolding.loadProject(projectData);
+      setProgress(1);
+      loadingScreen.hidden = true;
+      if (false) {
+        scaffolding.start();
+      } else {
+        launchScreen.hidden = false;
+        launchScreen.addEventListener('click', () => {
+          launchScreen.hidden = true;
+          scaffolding.start();
+        });
+        launchScreen.focus();
+      }
+    };
+    run().catch(handleError);
+  </script>
+
+  <script>
+  // ===== Controles táctiles -> teclado de Scratch =====
+  (function(){
+    const pad=document.getElementById('pad');
+    const held={};
+    const vmKey=(k,down)=>{ try{ window.vm.postIOData('keyboard',{key:k,isDown:down}); }catch(e){} };
+    const press=(el,down)=>{
+      const k=el.dataset.k; if(!k) return;
+      if(!!held[k]===down) return; held[k]=down;
+      el.classList.toggle('down',down);
+      vmKey(k,down);
+      if(down && navigator.vibrate) try{navigator.vibrate(8)}catch(e){}
+    };
+    // pointer tracking por dedo: permite deslizar de una flecha a otra
+    const owner=new Map(); // pointerId -> element
+    const hit=(x,y)=>{ const e=document.elementFromPoint(x,y); return e&&e.closest&&e.closest('.tb[data-k]'); };
+    pad.addEventListener('pointerdown',e=>{
+      const b=hit(e.clientX,e.clientY); if(!b) return;
+      e.preventDefault(); owner.set(e.pointerId,b); press(b,true);
+    },{passive:false});
+    pad.addEventListener('pointermove',e=>{
+      if(!owner.has(e.pointerId)) return;
+      const cur=owner.get(e.pointerId), b=hit(e.clientX,e.clientY);
+      if(b!==cur){ if(cur) press(cur,false); if(b){ owner.set(e.pointerId,b); press(b,true);} else owner.delete(e.pointerId); }
+    });
+    const up=e=>{ const b=owner.get(e.pointerId); if(b){ press(b,false); owner.delete(e.pointerId);} };
+    pad.addEventListener('pointerup',up); pad.addEventListener('pointercancel',up);
+    window.addEventListener('blur',()=>{ document.querySelectorAll('.tb.down').forEach(b=>press(b,false)); });
+
+    // mostrar/ocultar pad
+    let visible=true;
+    const show=v=>{ visible=v; pad.querySelectorAll('#dpad,#acts').forEach(n=>n.style.display=v?'':'none'); };
+    document.getElementById('padbtn').addEventListener('click',()=>show(!visible));
+
+    // pantalla completa + bloqueo horizontal
+    const fs=async()=>{
+      try{ const el=document.documentElement; if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){}
+      try{ await screen.orientation.lock('landscape'); }catch(e){}
+    };
+    document.getElementById('fsbtn').addEventListener('click',fs);
+
+    // activar pad al empezar el juego (tap en la bandera verde)
+    const launch=document.getElementById('launch');
+    launch.addEventListener('click',()=>{ pad.classList.add('on'); fs(); },{capture:true});
+    // si no hay pantalla de launch, mostrarlo igualmente
+    setTimeout(()=>{ if(launch.hidden) pad.classList.add('on'); },3000);
+
+    // evitar menús/zoom/scroll
+    document.addEventListener('contextmenu',e=>e.preventDefault());
+    document.addEventListener('gesturestart',e=>e.preventDefault());
+    // wake lock
+    const wl=()=>{ try{ navigator.wakeLock&&navigator.wakeLock.request('screen'); }catch(e){} };
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) wl(); });
+    launch.addEventListener('click',wl);
+  })();
+  </script>
+</body>
+</html>

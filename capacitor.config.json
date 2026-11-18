@@ -1,0 +1,7 @@
+{
+  "appId": "com.threeleft.game",
+  "appName": "Three Left",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": true }
+}
