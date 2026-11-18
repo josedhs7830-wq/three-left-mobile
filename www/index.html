@@ -130,29 +130,30 @@
     }
 
     html,body{height:100%;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-    #app{right:0;bottom:0}
+    :root{--b:min(21vmin,104px);--jb:min(40vmin,200px)}
     #pad{position:fixed;inset:0;pointer-events:none;z-index:50;display:none}
     #pad.on{display:block}
-    .tb{position:absolute;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;
-        display:flex;align-items:center;justify-content:center;color:#fff;font:bold 22px sans-serif;
+    .tb{position:absolute;display:flex;align-items:center;justify-content:center;color:#fff;font:bold 26px sans-serif;
         background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.45);border-radius:50%;
-        width:var(--b);height:var(--b)}
-    .tb.sq{border-radius:14px}
-    .tb.down{background:rgba(255,200,0,.5);border-color:#ffd000}
-    :root{--b:min(17vmin,84px)}
-    #dpad{position:absolute;left:calc(env(safe-area-inset-left,0px) + 3vmin);bottom:calc(env(safe-area-inset-bottom,0px) + 5vmin);
-          width:calc(var(--b)*3);height:calc(var(--b)*3)}
-    #dpad .tb{position:absolute}
-    #dpad .u{left:var(--b);top:0}#dpad .d{left:var(--b);top:calc(var(--b)*2)}
-    #dpad .l{left:0;top:var(--b)}#dpad .r{left:calc(var(--b)*2);top:var(--b)}
-    #acts{position:absolute;right:calc(env(safe-area-inset-right,0px) + 3vmin);bottom:calc(env(safe-area-inset-bottom,0px) + 5vmin);
-          width:calc(var(--b)*2.4);height:calc(var(--b)*2.4)}
-    #acts .tb{position:absolute}
-    #acts .z{right:0;bottom:calc(var(--b)*.9)}
-    #acts .x{left:0;bottom:calc(var(--b)*.2)}
-    #acts .c{right:calc(var(--b)*.1);bottom:calc(var(--b)*-.15 - var(--b)*.9);display:none}
-    #top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:10px}
-    #top .tb{--b:40px;font-size:15px;opacity:.7}
+        width:var(--b);height:var(--b);user-select:none;-webkit-user-select:none;touch-action:none}
+    .tb.down{background:rgba(255,200,0,.55);border-color:#ffd000}
+    /* Botones IZQUIERDA */
+    #btnzone{position:absolute;left:0;top:25%;width:46%;bottom:0;pointer-events:auto;touch-action:none}
+    #acts{position:absolute;left:calc(env(safe-area-inset-left,0px) + 3vmin);bottom:calc(env(safe-area-inset-bottom,0px) + 4vmin);
+          width:calc(var(--b)*2.3);height:calc(var(--b)*2.1);pointer-events:none}
+    #acts .tb{pointer-events:none}
+    #acts .z{right:0;top:0}
+    #acts .x{left:0;bottom:0}
+    /* Joystick DERECHA */
+    #stickzone{position:absolute;right:0;top:20%;width:48%;bottom:0;pointer-events:auto;touch-action:none}
+    #sbase{position:absolute;left:0;top:0;width:var(--jb);height:var(--jb);margin:calc(var(--jb)/-2) 0 0 calc(var(--jb)/-2);
+           border-radius:50%;background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.4);pointer-events:none;opacity:.5;will-change:transform}
+    #sbase.act{opacity:1;background:rgba(255,255,255,.18)}
+    #sknob{position:absolute;left:50%;top:50%;width:44%;height:44%;margin:-22% 0 0 -22%;border-radius:50%;
+           background:rgba(255,255,255,.5);border:2px solid #fff;will-change:transform}
+    #top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:50%;transform:translateX(-50%);display:flex;gap:10px;pointer-events:none}
+    #top .tb{position:relative;--b:44px;width:56px;border-radius:14px;font-size:16px;opacity:.75;pointer-events:auto}
+    #top .tb::after{content:"";position:absolute;inset:-8px}
     #rot{position:fixed;inset:0;z-index:99;background:#000;color:#fff;display:none;align-items:center;justify-content:center;
          text-align:center;font:20px sans-serif;padding:24px}
     @media (orientation:portrait){#rot{display:flex}}
@@ -181,20 +182,16 @@
   <div id="app"></div>
   <div id="rot">📱↻<br><br>Gira el celular en horizontal<br>Rotate your phone to landscape</div>
   <div id="pad">
-    <div id="top">
-      <div class="tb sq" data-k="c" style="width:56px">C</div>
-      <div class="tb sq" id="fsbtn" style="width:56px">⛶</div>
-      <div class="tb sq" id="padbtn" style="width:56px">🎮</div>
-    </div>
-    <div id="dpad">
-      <div class="tb u" data-k="ArrowUp">▲</div>
-      <div class="tb l" data-k="ArrowLeft">◀</div>
-      <div class="tb r" data-k="ArrowRight">▶</div>
-      <div class="tb d" data-k="ArrowDown">▼</div>
-    </div>
+    <div id="btnzone"></div>
     <div id="acts">
       <div class="tb z" data-k="z">Z</div>
       <div class="tb x" data-k="x">X</div>
+    </div>
+    <div id="stickzone"><div id="sbase"><div id="sknob"></div></div></div>
+    <div id="top">
+      <div class="tb" id="bc" data-k="c">C</div>
+      <div class="tb" id="fsbtn">⛶</div>
+      <div class="tb" id="padbtn">🎮</div>
     </div>
   </div>
 
@@ -374,54 +371,109 @@
   <script>
   // ===== Controles táctiles -> teclado de Scratch =====
   (function(){
-    const pad=document.getElementById('pad');
-    const held={};
+    const $=id=>document.getElementById(id);
+    const pad=$('pad'), btnzone=$('btnzone'), stickzone=$('stickzone'), base=$('sbase'), knob=$('sknob');
+    const held={}, since={};
     const vmKey=(k,down)=>{ try{ window.vm.postIOData('keyboard',{key:k,isDown:down}); }catch(e){} };
-    const press=(el,down)=>{
-      const k=el.dataset.k; if(!k) return;
-      if(!!held[k]===down) return; held[k]=down;
-      el.classList.toggle('down',down);
-      vmKey(k,down);
-      if(down && navigator.vibrate) try{navigator.vibrate(8)}catch(e){}
+
+    // Scratch corre a 30fps (33ms). Un toque mas corto que un frame se perdia: garantizamos 50ms.
+    const MIN_HOLD=50;
+    const setKey=(k,down)=>{
+      if(!!held[k]===down) return;
+      if(down){ held[k]=true; since[k]=performance.now(); vmKey(k,true); }
+      else{
+        held[k]=false;
+        const wait=MIN_HOLD-(performance.now()-since[k]);
+        if(wait>0) setTimeout(()=>{ if(!held[k]) vmKey(k,false); },wait); else vmKey(k,false);
+      }
     };
-    // pointer tracking por dedo: permite deslizar de una flecha a otra
-    const owner=new Map(); // pointerId -> element
-    const hit=(x,y)=>{ const e=document.elementFromPoint(x,y); return e&&e.closest&&e.closest('.tb[data-k]'); };
-    pad.addEventListener('pointerdown',e=>{
-      const b=hit(e.clientX,e.clientY); if(!b) return;
-      e.preventDefault(); owner.set(e.pointerId,b); press(b,true);
+    const press=(el,down)=>{
+      if(!!el._d===down) return; el._d=down;
+      el.classList.toggle('down',down);
+      setKey(el.dataset.k,down);
+      if(down && navigator.vibrate) try{navigator.vibrate(6)}catch(e){}
+    };
+
+    // ---------- Botones Z / X (izquierda): deteccion por cercania, mas permisiva ----------
+    const MARGIN=26; // px extra alrededor del boton que tambien cuentan como toque
+    let rects=[];
+    const calcBtns=()=>{ rects=[...document.querySelectorAll('#acts .tb')].map(el=>{
+      const r=el.getBoundingClientRect(); return {el,cx:(r.left+r.right)/2,cy:(r.top+r.bottom)/2,r:r.width/2}; }); };
+    const nearest=(x,y)=>{ let b=null,bd=1e9;
+      for(const o of rects){ const d=Math.hypot(x-o.cx,y-o.cy)-o.r; if(d<bd){bd=d;b=o.el;} }
+      return bd<=MARGIN?b:null; };
+    const own=new Map();
+    btnzone.addEventListener('pointerdown',e=>{
+      e.preventDefault();
+      const b=nearest(e.clientX,e.clientY); if(!b) return;
+      try{btnzone.setPointerCapture(e.pointerId)}catch(_){}
+      own.set(e.pointerId,b); press(b,true);
     },{passive:false});
-    pad.addEventListener('pointermove',e=>{
-      if(!owner.has(e.pointerId)) return;
-      const cur=owner.get(e.pointerId), b=hit(e.clientX,e.clientY);
-      if(b!==cur){ if(cur) press(cur,false); if(b){ owner.set(e.pointerId,b); press(b,true);} else owner.delete(e.pointerId); }
+    btnzone.addEventListener('pointermove',e=>{
+      const cur=own.get(e.pointerId); if(!cur) return;
+      const b=nearest(e.clientX,e.clientY);
+      if(b!==cur){ press(cur,false); if(b){ own.set(e.pointerId,b); press(b,true);} else own.delete(e.pointerId); }
     });
-    const up=e=>{ const b=owner.get(e.pointerId); if(b){ press(b,false); owner.delete(e.pointerId);} };
-    pad.addEventListener('pointerup',up); pad.addEventListener('pointercancel',up);
-    window.addEventListener('blur',()=>{ document.querySelectorAll('.tb.down').forEach(b=>press(b,false)); });
+    const bUp=e=>{ const b=own.get(e.pointerId); if(b){ press(b,false); own.delete(e.pointerId);} };
+    btnzone.addEventListener('pointerup',bUp); btnzone.addEventListener('pointercancel',bUp);
 
-    // mostrar/ocultar pad
+    // Boton C (arriba)
+    const bc=$('bc');
+    bc.addEventListener('pointerdown',e=>{ e.preventDefault(); try{bc.setPointerCapture(e.pointerId)}catch(_){} press(bc,true); },{passive:false});
+    const cUp=()=>press(bc,false);
+    bc.addEventListener('pointerup',cUp); bc.addEventListener('pointercancel',cUp);
+
+    // ---------- Joystick flotante (derecha) ----------
+    let sid=null, cx=0, cy=0, R=80, zr={left:0,top:0}, px=0, py=0, raf=0;
+    const dirs={ArrowUp:false,ArrowDown:false,ArrowLeft:false,ArrowRight:false};
+    const cacheStick=()=>{ const r=stickzone.getBoundingClientRect(); zr={left:r.left,top:r.top,w:r.width,h:r.height};
+      R=Math.max(40,base.offsetWidth/2); };
+    const restPos=()=>{ base.style.transform='translate('+(zr.w-R-Math.max(16,zr.w*0.06))+'px,'+(zr.h-R-Math.max(16,zr.h*0.06))+'px)'; };
+    const draw=()=>{ raf=0; knob.style.transform='translate('+px+'px,'+py+'px)'; base.style.transform='translate('+(cx-zr.left)+'px,'+(cy-zr.top)+'px)'; };
+    const queue=()=>{ if(!raf) raf=requestAnimationFrame(draw); };
+    const applyDirs=(dx,dy)=>{
+      const dz=R*0.16;                         // zona muerta chica = mas sensible
+      const ax=Math.abs(dx), ay=Math.abs(dy), maj=Math.max(ax,ay);
+      const okX=ax>dz && ax>=maj*0.36, okY=ay>dz && ay>=maj*0.36;
+      const want={ArrowRight:okX&&dx>0,ArrowLeft:okX&&dx<0,ArrowDown:okY&&dy>0,ArrowUp:okY&&dy<0};
+      for(const k in want){ if(want[k]!==dirs[k]){ dirs[k]=want[k]; setKey(k,want[k]); } }
+    };
+    const moveStick=(x,y)=>{
+      let dx=x-cx, dy=y-cy; const dist=Math.hypot(dx,dy), max=R*0.85;
+      if(dist>max){ const k=(dist-max)/dist; cx+=dx*k; cy+=dy*k; dx=x-cx; dy=y-cy; } // el centro sigue al dedo
+      px=dx; py=dy; applyDirs(dx,dy); queue();
+    };
+    stickzone.addEventListener('pointerdown',e=>{
+      if(sid!==null) return; e.preventDefault();
+      sid=e.pointerId; try{stickzone.setPointerCapture(sid)}catch(_){}
+      cx=e.clientX; cy=e.clientY; base.classList.add('act'); px=py=0; moveStick(e.clientX,e.clientY);
+    },{passive:false});
+    stickzone.addEventListener('pointermove',e=>{ if(e.pointerId===sid) moveStick(e.clientX,e.clientY); });
+    const sEnd=e=>{ if(e.pointerId!==sid) return; sid=null; px=py=0; base.classList.remove('act'); applyDirs(0,0);
+      if(raf){cancelAnimationFrame(raf);raf=0;} knob.style.transform=''; restPos(); };
+    stickzone.addEventListener('pointerup',sEnd); stickzone.addEventListener('pointercancel',sEnd);
+
+    // ---------- UI ----------
+    const layout=()=>{ calcBtns(); cacheStick(); if(sid===null) restPos(); };
+    window.addEventListener('resize',layout); window.addEventListener('orientationchange',()=>setTimeout(layout,250));
+    window.addEventListener('blur',()=>{ document.querySelectorAll('.tb.down').forEach(b=>press(b,false)); applyDirs(0,0); });
+
     let visible=true;
-    const show=v=>{ visible=v; pad.querySelectorAll('#dpad,#acts').forEach(n=>n.style.display=v?'':'none'); };
-    document.getElementById('padbtn').addEventListener('click',()=>show(!visible));
+    $('padbtn').addEventListener('click',()=>{ visible=!visible; btnzone.style.display=stickzone.style.display=$('acts').style.display=visible?'':'none'; if(visible) layout(); });
 
-    // pantalla completa + bloqueo horizontal
     const fs=async()=>{
       try{ const el=document.documentElement; if(!document.fullscreenElement) await (el.requestFullscreen||el.webkitRequestFullscreen).call(el); else await document.exitFullscreen(); }catch(e){}
       try{ await screen.orientation.lock('landscape'); }catch(e){}
+      setTimeout(layout,300);
     };
-    document.getElementById('fsbtn').addEventListener('click',fs);
+    $('fsbtn').addEventListener('click',fs);
 
-    // activar pad al empezar el juego (tap en la bandera verde)
-    const launch=document.getElementById('launch');
-    launch.addEventListener('click',()=>{ pad.classList.add('on'); fs(); },{capture:true});
-    // si no hay pantalla de launch, mostrarlo igualmente
-    setTimeout(()=>{ if(launch.hidden) pad.classList.add('on'); },3000);
+    const launch=$('launch');
+    launch.addEventListener('click',()=>{ pad.classList.add('on'); layout(); fs(); },{capture:true});
+    setTimeout(()=>{ if(launch.hidden){ pad.classList.add('on'); layout(); } },3000);
 
-    // evitar menús/zoom/scroll
     document.addEventListener('contextmenu',e=>e.preventDefault());
     document.addEventListener('gesturestart',e=>e.preventDefault());
-    // wake lock
     const wl=()=>{ try{ navigator.wakeLock&&navigator.wakeLock.request('screen'); }catch(e){} };
     document.addEventListener('visibilitychange',()=>{ if(!document.hidden) wl(); });
     launch.addEventListener('click',wl);
